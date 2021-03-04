@@ -1,9 +1,8 @@
-import React from 'react';
-import HeaderForm from './HeaderForm';
+import React from "react";
+import HeaderForm from "./HeaderForm";
 
-function Header() {
+function Header(props) {
   return (
-   
     <header className="col2 mb-1">
       <div>
         <h1 className="title">
@@ -11,11 +10,12 @@ function Header() {
           Gmail
         </h1>
       </div>
-      <HeaderForm/>
-
-
+      <HeaderForm
+        handleInboxFilter={props.handleInboxFilter}
+        handleDeleteFilter={props.handleDeleteFilter}
+        handleTextFilter={props.handleTextFilter}
+      />
     </header>
- 
   );
 }
 

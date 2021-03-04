@@ -20,9 +20,22 @@ const renderEmails = () => {
 };
 
 function App() {
+  const handleInboxFilter = (ev) => {
+    console.log(`Mensajes recibidos`);
+  };
+  const handleDeleteFilter = (ev) => {
+    console.log(`Mensajes borrados`);
+  };
+  const handleTextFilter = (data) => {
+    console.log(`Mensaje filtrado: `, data);
+  };
   return (
     <>
-      <Header />
+      <Header
+        handleInboxFilter={handleInboxFilter}
+        handleDeleteFilter={handleDeleteFilter}
+        handleTextFilter={handleTextFilter}
+      />
       <table className="table">
         <tbody>{renderEmails()}</tbody>
       </table>
