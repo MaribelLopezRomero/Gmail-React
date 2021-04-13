@@ -5,44 +5,82 @@ import EmailItem from "./EmailItem";
 import EmailReader from "./EmailReader";
 import emails from "../data/emails.json";
 
-const renderEmails = () => {
-  return emails.map((email) => {
-    console.log(email);
-    return (
-      <EmailItem
-        key={email.id}
-        from={email.fromName}
-        subject={email.fromEmail}
-        time={email.date}
-      />
-    );
-  });
-};
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      inboxFilter: "",
+    };
 
-function App() {
-  const handleInboxFilter = (ev) => {
+    this.handleInboxFilter = this.handleInboxFilter.bind(this);
+    this.handleDeleteFilter = this.handleDeleteFilter.bind(this);
+    this.handleTextFilter = this.handleTextFilter.bind(this);
+  }
+  handleInboxFilter = (ev) => {
     console.log(`Mensajes recibidos`);
   };
-  const handleDeleteFilter = (ev) => {
+  handleDeleteFilter = (ev) => {
     console.log(`Mensajes borrados`);
   };
-  const handleTextFilter = (data) => {
-    console.log(`Mensaje filtrado: `, data);
+  handleTextFilter = (data) => {
+    console.log(`Mensaje filtrado: `, data.value);
+    this.setState({
+      inboxFilter: data.value,
+    });
   };
-  return (
-    <>
-      <Header
-        handleInboxFilter={handleInboxFilter}
-        handleDeleteFilter={handleDeleteFilter}
-        handleTextFilter={handleTextFilter}
-      />
-      <table className="table">
-        <tbody>{renderEmails()}</tbody>
-      </table>
+  render() {
+    console.log(this.state, this.props);
 
-      <EmailReader />
-    </>
-  );
+    const filterEmails = () => {
+      return emails
+        .filter((email) => {
+          console.log(email, this.state.inboxFilter);
+          return email.fromEmail.includes(this.state.inboxFilter);
+        })
+        .map((email) => {
+          console.log(email);
+          return (
+            <EmailItem
+              key={email.id}
+              from={email.fromName}
+              subject={email.fromEmail}
+              time={email.date}
+            />
+          );
+        });
+    };
+
+    // const filterEmails = emails
+    //   .filter((email) => {
+    //     return email.fromEmail.includes(this.state.inboxFilter);
+    //   })
+    //   .map((email) => {
+    //     console.log(email);
+    //     return (
+    //       <EmailItem
+    //         key={email.id}
+    //         from={email.fromName}
+    //         subject={email.fromEmail}
+    //         time={email.date}
+    //       />
+    //     );
+    //   });
+
+    return (
+      <>
+        <Header
+          handleInboxFilter={this.handleInboxFilter}
+          handleDeleteFilter={this.handleDeleteFilter}
+          handleTextFilter={this.handleTextFilter}
+        />
+        <table className="table">
+          <tbody>{filterEmails()}</tbody>
+        </table>
+
+        <EmailReader />
+      </>
+    );
+  }
 }
 
 export default App;
