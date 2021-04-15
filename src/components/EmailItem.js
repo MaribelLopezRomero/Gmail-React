@@ -1,16 +1,41 @@
-import React from 'react';
+import React from "react";
 
 function EmailItem(props) {
-    // console.log (props.from)
+  // console.log (props.from)ç
+
+  // let deletedClass = "";
+  // if (props.deleted === true) {
+  //   deletedClass = "text--decoration--through";
+  // }
+  // let readClass = "";
+  // if (props.read === false) {
+  //   readClass = "text--bold";
+  // }
+
+  let deletedClass = props.deleted === true ? "text--decoration--through" : "";
+  let readClass = props.read === false ? "text--bold" : "";
+
   return (
-        <tr className="cursor-pointer">
-          <td><a href="#" className="text--decoration--none">{props.from}</a></td>
-          <td><a href="#" className="text--decoration--none">{props.subject}</a></td>
-          <td><a href="#" className="text--decoration--none">{props.time}</a></td>
-          <td className="text-align-right">
-            <button className="form__btn fas fa-trash"></button>
-          </td>
-        </tr>
+    <tr className={`cursor-pointer ${deletedClass} ${readClass}`}>
+      <td>
+        <a href="#" className="text--decoration--none">
+          {props.from}
+        </a>
+      </td>
+      <td>
+        <a href="#" className="text--decoration--none">
+          {props.subject}
+        </a>
+      </td>
+      <td>
+        <a href="#" className="text--decoration--none">
+          {props.time}
+        </a>
+      </td>
+      <td className="text-align-right">
+        <button className="form__btn fas fa-trash"></button>
+      </td>
+    </tr>
   );
 }
 

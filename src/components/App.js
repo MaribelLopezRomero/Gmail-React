@@ -11,6 +11,7 @@ class App extends React.Component {
     this.state = {
       inboxFilter: "",
       emails: apiEmails,
+      showInbox: true,
     };
 
     this.handleInboxFilter = this.handleInboxFilter.bind(this);
@@ -19,62 +20,76 @@ class App extends React.Component {
   }
   //Eventos
   handleInboxFilter = (ev) => {
-    console.log(`Mensajes recibidos`);
+    this.setState({ showInbox: true });
   };
   handleDeleteFilter = (ev) => {
-    console.log(`Mensajes borrados`);
+    this.setState({
+      showInbox: false,
+    });
   };
   handleTextFilter = (data) => {
-    console.log(`Mensaje filtrado: `, data.value);
     this.setState({
       inboxFilter: data.value,
     });
   };
 
+  //Funcion pintar en un parrafo lo que hace la usuaria
+
+  renderFilter() {
+    const emailType = this.state.showInbox ? "recibidos" : "borrados";
+    const filterText =
+      this.state.inboxFilter === "" ? (
+        "y sin filtrar"
+      ) : (
+        <span>
+          y filtrando por{" "}
+          <span className="text--bold">{this.state.inboxFilter}</span>
+        </span>
+      );
+    return (
+      <p className="mb-1">
+        La usuaria está visualizando los emails{" "}
+        <span className="text--bold">{emailType}</span> {filterText}
+      </p>
+    );
+  }
+
   //Funcion de renderizado y filtrado
 
   renderEmails = () => {
     const inboxFilter = this.state.inboxFilter.toLocaleLowerCase();
-    return this.state.emails
-      .filter((email) => {
-        // console.log(email, this.state.inboxFilter);
-        return (
-          email.fromEmail.toLowerCase().includes(inboxFilter) ||
-          email.fromName.toLowerCase().includes(inboxFilter) ||
-          email.body.toLowerCase().includes(inboxFilter)
-        );
-      })
-      .map((email) => {
-        console.log(email);
-        return (
-          <EmailItem
-            key={email.id}
-            from={email.fromName}
-            subject={email.fromEmail}
-            time={email.date}
-          />
-        );
-      });
+    return (
+      this.state.emails
+        //Filtro por inbox vs deleted
+        .filter((email) => {
+          return this.state.showInbox === true ? !email.deleted : email.deleted;
+        })
+
+        //filtro por busqueda
+        .filter((email) => {
+          // console.log(email, this.state.inboxFilter);
+          return (
+            email.fromEmail.toLowerCase().includes(inboxFilter) ||
+            email.fromName.toLowerCase().includes(inboxFilter) ||
+            email.body.toLowerCase().includes(inboxFilter)
+          );
+        })
+        .map((email) => {
+          return (
+            <EmailItem
+              key={email.id}
+              from={email.fromName}
+              subject={email.fromEmail}
+              time={email.date}
+              deleted={email.deleted}
+              read={email.read}
+            />
+          );
+        })
+    );
   };
   render() {
     console.log(this.state, this.props);
-
-    // const filterEmails = emails
-    //   .filter((email) => {
-    //     return email.fromEmail.includes(this.state.inboxFilter);
-    //   })
-    //   .map((email) => {
-    //     console.log(email);
-    //     return (
-    //       <EmailItem
-    //         key={email.id}
-    //         from={email.fromName}
-    //         subject={email.fromEmail}
-    //         time={email.date}
-    //       />
-    //     );
-    //   });
-
     return (
       <>
         <Header
@@ -82,6 +97,7 @@ class App extends React.Component {
           handleDeleteFilter={this.handleDeleteFilter}
           handleTextFilter={this.handleTextFilter}
         />
+        {this.renderFilter()}
         <table className="table">
           <tbody>{this.renderEmails()}</tbody>
         </table>
