@@ -3,19 +3,21 @@ import "../stylesheets/App.css";
 import Header from "./Header";
 import EmailItem from "./EmailItem";
 import EmailReader from "./EmailReader";
-import emails from "../data/emails.json";
+import apiEmails from "../data/emails.json";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       inboxFilter: "",
+      emails: apiEmails,
     };
 
     this.handleInboxFilter = this.handleInboxFilter.bind(this);
     this.handleDeleteFilter = this.handleDeleteFilter.bind(this);
     this.handleTextFilter = this.handleTextFilter.bind(this);
   }
+  //Eventos
   handleInboxFilter = (ev) => {
     console.log(`Mensajes recibidos`);
   };
@@ -28,27 +30,34 @@ class App extends React.Component {
       inboxFilter: data.value,
     });
   };
+
+  //Funcion de renderizado y filtrado
+
+  renderEmails = () => {
+    const inboxFilter = this.state.inboxFilter.toLocaleLowerCase();
+    return this.state.emails
+      .filter((email) => {
+        // console.log(email, this.state.inboxFilter);
+        return (
+          email.fromEmail.toLowerCase().includes(inboxFilter) ||
+          email.fromName.toLowerCase().includes(inboxFilter) ||
+          email.body.toLowerCase().includes(inboxFilter)
+        );
+      })
+      .map((email) => {
+        console.log(email);
+        return (
+          <EmailItem
+            key={email.id}
+            from={email.fromName}
+            subject={email.fromEmail}
+            time={email.date}
+          />
+        );
+      });
+  };
   render() {
     console.log(this.state, this.props);
-
-    const filterEmails = () => {
-      return emails
-        .filter((email) => {
-          console.log(email, this.state.inboxFilter);
-          return email.fromEmail.includes(this.state.inboxFilter);
-        })
-        .map((email) => {
-          console.log(email);
-          return (
-            <EmailItem
-              key={email.id}
-              from={email.fromName}
-              subject={email.fromEmail}
-              time={email.date}
-            />
-          );
-        });
-    };
 
     // const filterEmails = emails
     //   .filter((email) => {
@@ -74,10 +83,15 @@ class App extends React.Component {
           handleTextFilter={this.handleTextFilter}
         />
         <table className="table">
-          <tbody>{filterEmails()}</tbody>
+          <tbody>{this.renderEmails()}</tbody>
         </table>
 
-        <EmailReader />
+        <EmailReader
+          fromName={this.state.emails[0].fromName}
+          fromEmail={this.state.emails[0].fromEmail}
+          subject={this.state.emails[0].subject}
+          body={this.state.emails[0].body}
+        />
       </>
     );
   }
