@@ -1,7 +1,7 @@
 import React from "react";
 
 function EmailItem(props) {
-  // console.log (props.from)ç
+  // console.log (props.from)
 
   // let deletedClass = "";
   // if (props.deleted === true) {
@@ -11,6 +11,10 @@ function EmailItem(props) {
   // if (props.read === false) {
   //   readClass = "text--bold";
   // }
+
+  const handleDeleteEmail = () => {
+    props.handleDeleteEmail(props.id);
+  };
 
   let deletedClass = props.deleted === true ? "text--decoration--through" : "";
   let readClass = props.read === false ? "text--bold" : "";
@@ -33,7 +37,10 @@ function EmailItem(props) {
         </a>
       </td>
       <td className="text-align-right">
-        <button className="form__btn fas fa-trash"></button>
+        <button
+          className="form__btn fas fa-trash"
+          onClick={handleDeleteEmail}
+        ></button>
       </td>
     </tr>
   );

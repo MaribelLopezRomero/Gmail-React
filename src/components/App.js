@@ -17,6 +17,7 @@ class App extends React.Component {
     this.handleInboxFilter = this.handleInboxFilter.bind(this);
     this.handleDeleteFilter = this.handleDeleteFilter.bind(this);
     this.handleTextFilter = this.handleTextFilter.bind(this);
+    this.handleDeleteEmail = this.handleDeleteEmail.bind(this);
   }
   //Eventos
   handleInboxFilter = (ev) => {
@@ -30,6 +31,17 @@ class App extends React.Component {
   handleTextFilter = (data) => {
     this.setState({
       inboxFilter: data.value,
+    });
+  };
+
+  handleDeleteEmail = (emailId) => {
+    console.log("borrando", emailId);
+    this.setState((prevState) => {
+      const email = prevState.emails.find((email) => email.id === emailId);
+      email.deleted = true;
+      return {
+        emails: prevState.emails,
+      };
     });
   };
 
@@ -78,11 +90,13 @@ class App extends React.Component {
           return (
             <EmailItem
               key={email.id}
+              id={email.id}
               from={email.fromName}
               subject={email.fromEmail}
               time={email.date}
               deleted={email.deleted}
               read={email.read}
+              handleDeleteEmail={this.handleDeleteEmail}
             />
           );
         })
@@ -107,6 +121,7 @@ class App extends React.Component {
           fromEmail={this.state.emails[0].fromEmail}
           subject={this.state.emails[0].subject}
           body={this.state.emails[0].body}
+          // handleDeleteEmail={this.handleDeleteFilter}
         />
       </>
     );
